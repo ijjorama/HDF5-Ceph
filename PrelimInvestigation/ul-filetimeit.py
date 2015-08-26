@@ -4,6 +4,8 @@ from boto.s3.connection import S3Connection
 import sys
 from boto.s3.key import Key
 
+import timeit
+
 def percent_cb(complete, total):
 	sys.stdout.write('.')
 	sys.stdout.flush()
@@ -21,12 +23,14 @@ def main():
 	objname = sys.argv[2]
 
 	k = Key(bucket)
-
-
 	k.key = objname
-	k.set_contents_from_filename(file,
-	cb=percent_cb, num_cb=10)
-	print '\n'
+        
+	from timeit import Timer
+# Really want to set contents from string, that is read file contents into string before starting timer
+
+	t = Timer(lambda: k.set_contents_from_filename(file)) 
+
+	print t.timeit(number=1)
 
 def listbucket(bucket):
 	for key in bucket.list():
