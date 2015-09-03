@@ -3,11 +3,17 @@ from boto.s3.connection import S3Connection
 import sys
 from boto.s3.key import Key
 
-
+import timeit
 
 def percent_cb(complete, total):
     sys.stdout.write('.')
     sys.stdout.flush()
+
+
+def getbytes(key, start, end):
+
+	headers = {'Range': 'bytes={}-{}'.format(start, end) }
+	return key.get_contents_as_string(headers=headers)
 
 def main():
 	conn = boto.connect_s3(host='gdss605.gridpp.rl.ac.uk', is_secure=False, 
@@ -15,16 +21,20 @@ def main():
 
 	bucket_name = 'ijj-bucket-01'
 	bucket = conn.get_bucket(bucket_name)
+	
 	objname = sys.argv[1]
-        fileout = sys.argv[2]
-        if len(sys.argv) == 4:
-		headers = 2
-	print "No. args = %d\n" % len(sys.argv)
-
 	key = bucket.get_key(objname)
-	headers = {'Range': 'bytes=0-1000000000'}
-#	headers = None	
-	key.get_contents_to_filename(fileout, headers=headers, cb=percent_cb)
+
+	start = sys.argv[2]
+	end = sys.argv[3]
+
+#	key.get_contents_to_filename(fileout, headers=headers, cb=percent_cb)
+
+	contents = getbytes(key, start, end)   # key.get_contents_as_string(headers=headers)
+
+
+	if len(contents) != int(end)-int(start)+1: # But range requested could be larger than size of whole file...
+		print "Summat's gone wrong. Length is %d, should be %d\n" % (len(contents), end-start+1)
 
 if __name__ == "__main__":
 	main()

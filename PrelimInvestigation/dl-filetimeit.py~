@@ -7,7 +7,6 @@ from timeit import Timer
 
 def getbytes(key, start, end):
 
-        end = str(int(end)-1)
         headers = {'Range': 'bytes={}-{}'.format(start, end) }
 	key.get_contents_as_string(headers=headers)
 
@@ -46,7 +45,7 @@ def main():
             print "Running test on %s:\n" % f
 	    t = Timer(lambda: f(key, start, end)) # t = Timer(lambda: getbytes(key, start, end)) 
 
-            f = globals()[f] # OK to set f here as it is only bound in the line above?
+            f = globals()[f] # OK to set f to the method here as it is only bound in the line above?
   
 	    n = 100
 	    timeperfetch =  t.timeit(number=n) / float(n) 

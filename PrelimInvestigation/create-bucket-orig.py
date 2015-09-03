@@ -12,7 +12,9 @@ def main():
 	conn = boto.connect_s3(host='gdss605.gridpp.rl.ac.uk', is_secure=False, 
 		calling_format = boto.s3.connection.OrdinaryCallingFormat(), proxy=False)
 
-	bucket_name = 'ijj-bucket-01'
+	print "Host: %s" % conn.host
+
+#	bucket_name = 'ijj-bucket-01'
 #	bucket = conn.create_bucket(bucket_name)
 
 #	if bucket is None:
@@ -29,6 +31,7 @@ def main():
 
 
 def listbucket(bucket):
+	print "Shouldn't be here..."
 	for key in bucket.list():
        		print "{name}\t{size}\t{modified}".format(
                 	name = key.name,
