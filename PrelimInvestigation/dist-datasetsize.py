@@ -7,8 +7,6 @@ import numpy as np
 import timeit
 
 
-#dsize = 0
-
 def myvisit(name, obj):
     if isinstance(obj, h5py.Dataset):
          print "len(%s) = %d, shape = %s, type = %s.\n" % \
@@ -35,19 +33,28 @@ def myvisit(name, obj):
     elif isinstance(obj, h5py.Group):
          print "%s is a group.\n" % name
 
+def getFile(filename, mode, endpoint=None):
+    
+    if endpoint is None: # Could poss use conditional assignment here, apart from import?
+        file = h5py.File(filename, mode)
+    else:
+        import h5pyd
+        file = h5pyd.File(filename, mode, endpoint)
+    return file
 
 def fetchds(f, dsetname):
     d = f[dsetname]
-    # @type d 
-#    global dsize
-#    dsize = d.size
     
 def main():
+    if len(sys.argv) < 1:
+        sys.exit("Must supply at least <filename> [<endpoint>]")
     filename = sys.argv[1]
-    f = h5py.File(filename, 'r')
-    
-#    global dsize
-    
+    if len(sys.argv) == 3:
+        endpoint = sys.argv[2] 
+    else: 
+        endpoint = None
+    f = getFile(filename, 'r', endpoint)
+        
     t = timeit.Timer(lambda: fetchds(f, name))
     
     name = 'inhomogeneity_in_latitude'
@@ -64,8 +71,8 @@ def main():
     dsize = data.nbytes
     
     
-    print "\t%s: size = %d, type = %s,  Time per fetch = %f, B/W = %.3f MB/s.\n" % \
-                     (name, dsize, typ, timeperfetch, d.len()/timeperfetch / pow(10, 6) )
+    print "\t%s: size = %d, type = %s,  Time per fetch = %f, B/W = %.3f KB/s.\n" % \
+                     (name, dsize, typ, timeperfetch, d.len()/timeperfetch / pow(10, 3) )
     
 #    f.visititems(myvisit)
 
