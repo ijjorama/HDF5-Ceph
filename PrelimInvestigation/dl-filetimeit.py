@@ -10,6 +10,7 @@ def getbytes(key, start, end):
         end = str(int(end)-1)
         headers = {'Range': 'bytes={}-{}'.format(start, end) }
 	key.get_contents_as_string(headers=headers)
+#        key.get_contents_to_filename('/dev/null')
 
 def getallbytes(key, start, end):
         key.get_contents_as_string()
