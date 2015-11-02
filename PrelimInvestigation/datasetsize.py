@@ -22,7 +22,7 @@ def myvisit(name, obj):
 #             print data.shape # "Type(data) == %s.\n" % (data.shape)
 
 
-
+             data.nbytes = 0
              if data.nbytes > thresh:
 
                  t = timeit.Timer(lambda: obj[:])
@@ -45,29 +45,33 @@ def fetchds(f, dsetname):
 def main():
     filename = sys.argv[1]
     f = h5py.File(filename, 'r')
-    
+    f.visititems(myvisit)    
+
+    sys.exit(0)
+
 #    global dsize
     
-    t = timeit.Timer(lambda: fetchds(f, name))
+
+#    t = timeit.Timer(lambda: fetchds(f, name))
     
-    name = 'inhomogeneity_in_latitude'
+#    name = 'inhomogeneity_in_latitude'
        
 
-    N = 10
-    timeperfetch = t.timeit(number = N)/N
+#    N = 10
+#    timeperfetch = t.timeit(number = N)/N
     
-    d = f[name]
-    data = d[:]
+#    d = f[name]
+#    data = d[:]
     
-    typ = d.dtype
-    # @type data 
-    dsize = data.nbytes
+#    typ = d.dtype
+#    # @type data 
+#    dsize = data.nbytes
     
     
-    print "\t%s: size = %d, type = %s,  Time per fetch = %f, B/W = %.3f MB/s.\n" % \
-                     (name, dsize, typ, timeperfetch, d.len()/timeperfetch / pow(10, 6) )
+#    print "\t%s: size = %d, type = %s,  Time per fetch = %f, B/W = %.3f MB/s.\n" % \
+#                     (name, dsize, typ, timeperfetch, d.len()/timeperfetch / pow(10, 6) )
     
-#    f.visititems(myvisit)
+
 
 if __name__ == "__main__":
     main()
